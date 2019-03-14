@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "declaration": true,
+    "importHelpers": true,
+    "jsx": "react",
+    "module": "commonjs",
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitAny": true,
+    "outDir": "./build",
+    "removeComments": true,
+    "target": "es6"
+  },
+  "exclude": [ "node_modules" ],
+  "files": [ "src/index.tsx" ]
+}
