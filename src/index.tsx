@@ -5,8 +5,11 @@ function Noop(props: any) { return props.children }
 
 interface Props {
 	components?: { [ selector: string ]: any }
+	customProps?: { [ key: string ]: any }
 	highlight?: string[]
+	html?: string
 	node?: Node
+	noop?: any
 	url?: string
 	xml?: string
 	rootSelector?: string
@@ -18,25 +21,24 @@ export default class DocereTextView extends React.PureComponent<Props> {
 	private currentHighlight: string[]
 	private node: Node
 
-	// state: State = {
-	// 	node: null
-	// }
-
 	static defaultProps: Partial<Props> = {
-		components: {}
+		customProps: {},
+		components: {},
+		noop: Noop,
 	}
 
-	componentDidMount() {
-		this.setRootNode()
+	async componentDidMount() {
+		await this.setRootNode()
 	}
 
-	componentDidUpdate(prevProps: Props) {
+	async componentDidUpdate(prevProps: Props) {
 		if (
 			prevProps.node != this.props.node ||
 			prevProps.url != this.props.url ||
-			prevProps.xml != this.props.xml
+			prevProps.xml != this.props.xml ||
+			prevProps.html != this.props.html
 		) {
-			this.setRootNode()
+			await this.setRootNode()
 		}
 
 		this.highlight(prevProps)
@@ -62,25 +64,24 @@ export default class DocereTextView extends React.PureComponent<Props> {
 			const parser = new DOMParser()
 			node = parser.parseFromString(this.props.xml, 'application/xml')
 		}
+		else if (this.props.html != null) {
+			const parser = new DOMParser()
+			node = parser.parseFromString(this.props.html, 'text/html')
+		}
 		else if (this.props.url != null) {
 			node = await fetchXml(this.props.url)
 		}
 
-		if (node instanceof XMLDocument) node = node.documentElement
-		if (this.props.rootSelector != null) node = node.querySelector(this.props.rootSelector)
+		if (node instanceof XMLDocument || node instanceof HTMLDocument) node = node.documentElement
+		this.node = (this.props.rootSelector == null) ? node : node.querySelector(this.props.rootSelector)
 
-		// this.setState({ node })
-		this.node = node
 		this.forceUpdate()
 	}
 
 	private getComponentClass(el: Element) {
 		const selector = Object.keys(this.props.components).find(selector => el.matches(selector))
-		if (selector == null) return Noop
+		if (selector == null) return this.props.noop
 		return this.props.components[selector]
-		// return (this.props.components.hasOwnProperty(tagName)) ?
-		// 	this.props.components[tagName] :
-		// 	Noop
 	}
 
 	private getAttributes(node: Element, index: number) {
@@ -94,7 +95,10 @@ export default class DocereTextView extends React.PureComponent<Props> {
 		})
 
 		// Convert NamedNodeMap to Object
-		const nodeAttributes: { [key: string]: string | number } = { key: index }
+		const nodeAttributes: { [key: string]: string | number } = {
+			key: index,
+			...this.props.customProps
+		}
 		for (const attr of node.attributes) {
 			 nodeAttributes[attr.name] = attr.value
 		}
@@ -116,7 +120,6 @@ export default class DocereTextView extends React.PureComponent<Props> {
 		const childNodes = Array.from(root.childNodes)
 		const children = childNodes.map((child, index) => this.domToComponent(child, index))
 
-		console.log(root.nodeName)
 		// Create the React.Component
 		return React.createElement(
 			this.getComponentClass(root as Element),

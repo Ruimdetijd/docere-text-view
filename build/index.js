@@ -6,15 +6,20 @@ const utils_1 = require("./utils");
 function Noop(props) { return props.children; }
 class DocereTextView extends React.PureComponent {
     componentDidMount() {
-        this.setRootNode();
+        return tslib_1.__awaiter(this, void 0, void 0, function* () {
+            yield this.setRootNode();
+        });
     }
     componentDidUpdate(prevProps) {
-        if (prevProps.node != this.props.node ||
-            prevProps.url != this.props.url ||
-            prevProps.xml != this.props.xml) {
-            this.setRootNode();
-        }
-        this.highlight(prevProps);
+        return tslib_1.__awaiter(this, void 0, void 0, function* () {
+            if (prevProps.node != this.props.node ||
+                prevProps.url != this.props.url ||
+                prevProps.xml != this.props.xml ||
+                prevProps.html != this.props.html) {
+                yield this.setRootNode();
+            }
+            this.highlight(prevProps);
+        });
     }
     render() {
         if (this.node == null)
@@ -31,21 +36,23 @@ class DocereTextView extends React.PureComponent {
                 const parser = new DOMParser();
                 node = parser.parseFromString(this.props.xml, 'application/xml');
             }
+            else if (this.props.html != null) {
+                const parser = new DOMParser();
+                node = parser.parseFromString(this.props.html, 'text/html');
+            }
             else if (this.props.url != null) {
                 node = yield utils_1.fetchXml(this.props.url);
             }
-            if (node instanceof XMLDocument)
+            if (node instanceof XMLDocument || node instanceof HTMLDocument)
                 node = node.documentElement;
-            if (this.props.rootSelector != null)
-                node = node.querySelector(this.props.rootSelector);
-            this.node = node;
+            this.node = (this.props.rootSelector == null) ? node : node.querySelector(this.props.rootSelector);
             this.forceUpdate();
         });
     }
     getComponentClass(el) {
         const selector = Object.keys(this.props.components).find(selector => el.matches(selector));
         if (selector == null)
-            return Noop;
+            return this.props.noop;
         return this.props.components[selector];
     }
     getAttributes(node, index) {
@@ -56,7 +63,7 @@ class DocereTextView extends React.PureComponent {
                 node.removeAttribute(attr);
             }
         });
-        const nodeAttributes = { key: index };
+        const nodeAttributes = Object.assign({ key: index }, this.props.customProps);
         for (const attr of node.attributes) {
             nodeAttributes[attr.name] = attr.value;
         }
@@ -71,7 +78,6 @@ class DocereTextView extends React.PureComponent {
             return null;
         const childNodes = Array.from(root.childNodes);
         const children = childNodes.map((child, index) => this.domToComponent(child, index));
-        console.log(root.nodeName);
         return React.createElement(this.getComponentClass(root), this.getAttributes(root, index), children);
     }
     highlight(_prevProps) {
@@ -107,6 +113,8 @@ class DocereTextView extends React.PureComponent {
     }
 }
 DocereTextView.defaultProps = {
-    components: {}
+    customProps: {},
+    components: {},
+    noop: Noop,
 };
 exports.default = DocereTextView;
