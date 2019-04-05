@@ -3,7 +3,7 @@ import { wrap, fetchXml } from './utils'
 
 function Noop(props: any) { return props.children } 
 
-interface Props {
+export interface DocereTextViewProps {
 	components?: { [ selector: string ]: any }
 	customProps?: { [ key: string ]: any }
 	highlight?: string[]
@@ -17,11 +17,11 @@ interface Props {
 // interface State {
 // 	node: Node
 // 	.}
-export default class DocereTextView extends React.PureComponent<Props> {
+export default class DocereTextView extends React.PureComponent<DocereTextViewProps> {
 	private currentHighlight: string[]
 	private node: Node
 
-	static defaultProps: Partial<Props> = {
+	static defaultProps: Partial<DocereTextViewProps> = {
 		customProps: {},
 		components: {},
 		noop: Noop,
@@ -31,7 +31,7 @@ export default class DocereTextView extends React.PureComponent<Props> {
 		await this.setRootNode()
 	}
 
-	async componentDidUpdate(prevProps: Props) {
+	async componentDidUpdate(prevProps: DocereTextViewProps) {
 		if (
 			prevProps.node != this.props.node ||
 			prevProps.url != this.props.url ||
@@ -128,7 +128,7 @@ export default class DocereTextView extends React.PureComponent<Props> {
 		)
 	}
 
-	private highlight(_prevProps: Props) {
+	private highlight(_prevProps: DocereTextViewProps) {
 		if (
 			this.props.highlight != null &&
 			this.node != null &&

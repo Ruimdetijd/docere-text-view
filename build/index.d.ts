@@ -1,5 +1,5 @@
 import * as React from 'react';
-interface Props {
+export interface DocereTextViewProps {
     components?: {
         [selector: string]: any;
     };
@@ -14,12 +14,12 @@ interface Props {
     xml?: string;
     rootSelector?: string;
 }
-export default class DocereTextView extends React.PureComponent<Props> {
+export default class DocereTextView extends React.PureComponent<DocereTextViewProps> {
     private currentHighlight;
     private node;
-    static defaultProps: Partial<Props>;
+    static defaultProps: Partial<DocereTextViewProps>;
     componentDidMount(): Promise<void>;
-    componentDidUpdate(prevProps: Props): Promise<void>;
+    componentDidUpdate(prevProps: DocereTextViewProps): Promise<void>;
     render(): any;
     private setRootNode;
     private getComponentClass;
@@ -27,4 +27,3 @@ export default class DocereTextView extends React.PureComponent<Props> {
     private domToComponent;
     private highlight;
 }
-export {};
