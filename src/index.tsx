@@ -10,16 +10,14 @@ export interface DocereTextViewProps {
 	html?: string
 	node?: Node
 	noop?: any
+	onRootElementChange?: (newRoot: Element) => void
 	url?: string
 	xml?: string
 	rootSelector?: string
 }
-// interface State {
-// 	node: Node
-// 	.}
 export default class DocereTextView extends React.PureComponent<DocereTextViewProps> {
 	private currentHighlight: string[]
-	private node: Node
+	private node: Element
 
 	static defaultProps: Partial<DocereTextViewProps> = {
 		customProps: {},
@@ -74,6 +72,8 @@ export default class DocereTextView extends React.PureComponent<DocereTextViewPr
 
 		if (node instanceof XMLDocument || node instanceof HTMLDocument) node = node.documentElement
 		this.node = (this.props.rootSelector == null) ? node : node.querySelector(this.props.rootSelector)
+
+		if (this.props.onRootElementChange != null) this.props.onRootElementChange(this.node)
 
 		this.forceUpdate()
 	}

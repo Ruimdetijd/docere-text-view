@@ -10,6 +10,7 @@ export interface DocereTextViewProps {
     html?: string;
     node?: Node;
     noop?: any;
+    onRootElementChange?: (newRoot: Element) => void;
     url?: string;
     xml?: string;
     rootSelector?: string;
