@@ -27,3 +27,11 @@ function wrap(node, index, found) {
     textRange.surroundContents(el);
 }
 exports.wrap = wrap;
+function attrsToObject(attrs) {
+    const tmpAttrs = {};
+    for (const attr of attrs) {
+        tmpAttrs[attr.name] = attr.value;
+    }
+    return tmpAttrs;
+}
+exports.attrsToObject = attrsToObject;

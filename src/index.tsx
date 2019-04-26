@@ -1,7 +1,9 @@
 import * as React from 'react'
-import { wrap, fetchXml } from './utils'
+import { wrap, fetchXml, attrsToObject } from './utils'
 
-function Noop(props: any) { return props.children } 
+function Noop(_nodeName: string, _attributes: any) {
+	return function NoopComp(props: any) { return props.children } 
+}
 
 export interface DocereTextViewProps {
 	components?: { [ selector: string ]: any }
@@ -9,7 +11,7 @@ export interface DocereTextViewProps {
 	highlight?: string[]
 	html?: string
 	node?: Node
-	noop?: any
+	noop?: (nodeName: string, attributes: any) => any
 	onRootElementChange?: (newRoot: Element) => void
 	url?: string
 	xml?: string
@@ -80,7 +82,7 @@ export default class DocereTextView extends React.PureComponent<DocereTextViewPr
 
 	private getComponentClass(el: Element) {
 		const selector = Object.keys(this.props.components).find(selector => el.matches(selector))
-		if (selector == null) return this.props.noop
+		if (selector == null) return this.props.noop(el.nodeName, attrsToObject(el.attributes))
 		return this.props.components[selector]
 	}
 
@@ -94,13 +96,10 @@ export default class DocereTextView extends React.PureComponent<DocereTextViewPr
 			}
 		})
 
-		// Convert NamedNodeMap to Object
-		const nodeAttributes: { [key: string]: string | number } = {
+		const nodeAttributes = {
+			...attrsToObject(node.attributes),
+			...this.props.customProps,
 			key: index,
-			...this.props.customProps
-		}
-		for (const attr of node.attributes) {
-			 nodeAttributes[attr.name] = attr.value
 		}
 
 		return nodeAttributes

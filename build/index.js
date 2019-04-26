@@ -3,7 +3,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const tslib_1 = require("tslib");
 const React = require("react");
 const utils_1 = require("./utils");
-function Noop(props) { return props.children; }
+function Noop(_nodeName, _attributes) {
+    return function NoopComp(props) { return props.children; };
+}
 class DocereTextView extends React.PureComponent {
     componentDidMount() {
         return tslib_1.__awaiter(this, void 0, void 0, function* () {
@@ -54,7 +56,7 @@ class DocereTextView extends React.PureComponent {
     getComponentClass(el) {
         const selector = Object.keys(this.props.components).find(selector => el.matches(selector));
         if (selector == null)
-            return this.props.noop;
+            return this.props.noop(el.nodeName, utils_1.attrsToObject(el.attributes));
         return this.props.components[selector];
     }
     getAttributes(node, index) {
@@ -65,10 +67,7 @@ class DocereTextView extends React.PureComponent {
                 node.removeAttribute(attr);
             }
         });
-        const nodeAttributes = Object.assign({ key: index }, this.props.customProps);
-        for (const attr of node.attributes) {
-            nodeAttributes[attr.name] = attr.value;
-        }
+        const nodeAttributes = Object.assign({}, utils_1.attrsToObject(node.attributes), this.props.customProps, { key: index });
         return nodeAttributes;
     }
     domToComponent(root, index) {

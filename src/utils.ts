@@ -27,7 +27,16 @@ function wrap(node: Text, index: number, found: string) {
 	textRange.surroundContents(el)
 }
 
+function attrsToObject(attrs: any) {
+	const tmpAttrs = {} as any
+	for (const attr of attrs) {
+		tmpAttrs[attr.name] = attr.value
+	}
+	return tmpAttrs
+}
+
 export {
+	attrsToObject,
 	fetchXml,
 	wrap,
 }

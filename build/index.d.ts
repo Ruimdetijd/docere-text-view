@@ -9,7 +9,7 @@ export interface DocereTextViewProps {
     highlight?: string[];
     html?: string;
     node?: Node;
-    noop?: any;
+    noop?: (nodeName: string, attributes: any) => any;
     onRootElementChange?: (newRoot: Element) => void;
     url?: string;
     xml?: string;
