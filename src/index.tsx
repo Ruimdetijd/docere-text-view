@@ -10,6 +10,7 @@ export interface DocereTextViewProps {
 	customProps?: { [ key: string ]: any }
 	highlight?: string[]
 	html?: string
+	ignore?: string[]
 	node?: Node
 	noop?: (nodeName: string, attributes: any) => any
 	onRootElementChange?: (newRoot: Element) => void
@@ -24,6 +25,7 @@ export default class DocereTextView extends React.PureComponent<DocereTextViewPr
 	static defaultProps: Partial<DocereTextViewProps> = {
 		customProps: {},
 		components: {},
+		ignore: [],
 		noop: Noop,
 	}
 
@@ -81,6 +83,9 @@ export default class DocereTextView extends React.PureComponent<DocereTextViewPr
 	}
 
 	private getComponentClass(el: Element) {
+		const foundIgnore = this.props.ignore.some(selector => el.matches(selector))
+		if (foundIgnore) return null
+
 		const selector = Object.keys(this.props.components).find(selector => el.matches(selector))
 		if (selector == null) return this.props.noop(el.nodeName, attrsToObject(el.attributes))
 		return this.props.components[selector]
@@ -115,13 +120,16 @@ export default class DocereTextView extends React.PureComponent<DocereTextViewPr
 		// Only process Elements after this
 		if (root.nodeType !== 1) return null
 
+		const componentClass = this.getComponentClass(root as Element)
+		if (componentClass == null) return null
+
 		// Map children to component
 		const childNodes = Array.from(root.childNodes)
 		const children = childNodes.map((child, index) => this.domToComponent(child, index))
 
 		// Create the React.Component
 		return React.createElement(
-			this.getComponentClass(root as Element),
+			componentClass,
 			this.getAttributes(root as Element, index),
 			children
 		)

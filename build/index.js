@@ -54,6 +54,9 @@ class DocereTextView extends React.PureComponent {
         });
     }
     getComponentClass(el) {
+        const foundIgnore = this.props.ignore.some(selector => el.matches(selector));
+        if (foundIgnore)
+            return null;
         const selector = Object.keys(this.props.components).find(selector => el.matches(selector));
         if (selector == null)
             return this.props.noop(el.nodeName, utils_1.attrsToObject(el.attributes));
@@ -77,9 +80,12 @@ class DocereTextView extends React.PureComponent {
             return root.textContent;
         if (root.nodeType !== 1)
             return null;
+        const componentClass = this.getComponentClass(root);
+        if (componentClass == null)
+            return null;
         const childNodes = Array.from(root.childNodes);
         const children = childNodes.map((child, index) => this.domToComponent(child, index));
-        return React.createElement(this.getComponentClass(root), this.getAttributes(root, index), children);
+        return React.createElement(componentClass, this.getAttributes(root, index), children);
     }
     highlight(_prevProps) {
         if (this.props.highlight != null &&
@@ -116,6 +122,7 @@ class DocereTextView extends React.PureComponent {
 DocereTextView.defaultProps = {
     customProps: {},
     components: {},
+    ignore: [],
     noop: Noop,
 };
 exports.default = DocereTextView;
