@@ -47,13 +47,12 @@ export default class DocereTextView extends React.PureComponent<DocereTextViewPr
 	}
 
 	render() {
-		if (this.node == null) return null
 		return this.domToComponent(this.node)
 	}
 
 	/**
 	 * Set the document. There are three props options.
-	 * 1 `doc`: an XMLDocument is directly passed to the Component.
+	 * 1 `node`: a node (HTMLDocument, XMLDocument, Element) is directly passed to the Component.
 	 * 2 `xml`: a string of XML is parsed by DOMParser.
 	 * 3 `url`: an XMLDocument is fetched by XMLHttpRequest.
 	 */
@@ -91,7 +90,7 @@ export default class DocereTextView extends React.PureComponent<DocereTextViewPr
 		return this.props.components[selector]
 	}
 
-	private getAttributes(node: Element, index: number) {
+	private getAttributes(node: Element, index: string) {
 		// Prepare attributes. React does not accept all attribute names (ref, class, style, key)
 		const unacceptedAttributes = ['ref', 'class', 'style', 'key']
 		unacceptedAttributes.forEach(attr => {
@@ -110,7 +109,7 @@ export default class DocereTextView extends React.PureComponent<DocereTextViewPr
 		return nodeAttributes
 	}
 
-	private domToComponent(root: Node, index?: number): any {
+	private domToComponent(root: Node, rootIndex?: string): any {
 		// If root is null or undefined, return null, which is a valid output for a React.Component
 		if (root == null) return null
 
@@ -123,15 +122,11 @@ export default class DocereTextView extends React.PureComponent<DocereTextViewPr
 		const componentClass = this.getComponentClass(root as Element)
 		if (componentClass == null) return null
 
-		// Map children to component
-		const childNodes = Array.from(root.childNodes)
-		const children = childNodes.map((child, index) => this.domToComponent(child, index))
-
 		// Create the React.Component
 		return React.createElement(
 			componentClass,
-			this.getAttributes(root as Element, index),
-			children
+			this.getAttributes(root as Element, rootIndex),
+			Array.from(root.childNodes).map((child, index) => this.domToComponent(child, `${rootIndex}-${index}`))
 		)
 	}
 

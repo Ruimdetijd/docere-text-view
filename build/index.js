@@ -24,8 +24,6 @@ class DocereTextView extends React.PureComponent {
         });
     }
     render() {
-        if (this.node == null)
-            return null;
         return this.domToComponent(this.node);
     }
     setRootNode() {
@@ -73,7 +71,7 @@ class DocereTextView extends React.PureComponent {
         const nodeAttributes = Object.assign({}, utils_1.attrsToObject(node.attributes), this.props.customProps, { key: index });
         return nodeAttributes;
     }
-    domToComponent(root, index) {
+    domToComponent(root, rootIndex) {
         if (root == null)
             return null;
         if (root.nodeType === 3)
@@ -83,9 +81,7 @@ class DocereTextView extends React.PureComponent {
         const componentClass = this.getComponentClass(root);
         if (componentClass == null)
             return null;
-        const childNodes = Array.from(root.childNodes);
-        const children = childNodes.map((child, index) => this.domToComponent(child, index));
-        return React.createElement(componentClass, this.getAttributes(root, index), children);
+        return React.createElement(componentClass, this.getAttributes(root, rootIndex), Array.from(root.childNodes).map((child, index) => this.domToComponent(child, `${rootIndex}-${index}`)));
     }
     highlight(_prevProps) {
         if (this.props.highlight != null &&
