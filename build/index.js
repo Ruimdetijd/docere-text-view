@@ -3,9 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const tslib_1 = require("tslib");
 const React = require("react");
 const utils_1 = require("./utils");
-function Noop(_nodeName, _attributes) {
-    return function NoopComp(props) { return props.children; };
-}
+function NoopComp(props) { return props.children; }
 class DocereTextView extends React.PureComponent {
     componentDidMount() {
         return tslib_1.__awaiter(this, void 0, void 0, function* () {
@@ -57,7 +55,7 @@ class DocereTextView extends React.PureComponent {
             return null;
         const selector = Object.keys(this.props.components).find(selector => el.matches(selector));
         if (selector == null)
-            return this.props.noop(el.nodeName, utils_1.attrsToObject(el.attributes));
+            return NoopComp;
         return this.props.components[selector];
     }
     getAttributes(node, index) {
@@ -119,6 +117,5 @@ DocereTextView.defaultProps = {
     customProps: {},
     components: {},
     ignore: [],
-    noop: Noop,
 };
 exports.default = DocereTextView;

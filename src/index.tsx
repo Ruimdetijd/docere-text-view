@@ -1,18 +1,21 @@
 import * as React from 'react'
 import { wrap, fetchXml, attrsToObject } from './utils'
 
-function Noop(_nodeName: string, _attributes: any) {
-	return function NoopComp(props: any) { return props.children } 
-}
+function NoopComp(props: any) { return props.children } 
+// function Noop(_nodeName: string, _attributes: any) {
+// 	return NoopComp
+// }
+
+type ReactComponent = React.FunctionComponent<any> | React.ComponentClass<any>
 
 export interface DocereTextViewProps {
-	components?: { [ selector: string ]: any }
+	components?: { [ selector: string ]: ReactComponent }
 	customProps?: { [ key: string ]: any }
 	highlight?: string[]
 	html?: string
 	ignore?: string[]
 	node?: Node
-	noop?: (nodeName: string, attributes: any) => any
+	// noop?: (nodeName: string, attributes: any) => ReactComponent
 	onRootElementChange?: (newRoot: Element) => void
 	url?: string
 	xml?: string
@@ -26,7 +29,7 @@ export default class DocereTextView extends React.PureComponent<DocereTextViewPr
 		customProps: {},
 		components: {},
 		ignore: [],
-		noop: Noop,
+		// noop: Noop,
 	}
 
 	async componentDidMount() {
@@ -81,12 +84,14 @@ export default class DocereTextView extends React.PureComponent<DocereTextViewPr
 		this.forceUpdate()
 	}
 
-	private getComponentClass(el: Element) {
+	private getComponentClass(el: Element): ReactComponent {
 		const foundIgnore = this.props.ignore.some(selector => el.matches(selector))
 		if (foundIgnore) return null
 
 		const selector = Object.keys(this.props.components).find(selector => el.matches(selector))
-		if (selector == null) return this.props.noop(el.nodeName, attrsToObject(el.attributes))
+		// if (selector == null) return this.props.noop(el.nodeName, attrsToObject(el.attributes))
+		if (selector == null) return NoopComp
+
 		return this.props.components[selector]
 	}
 
