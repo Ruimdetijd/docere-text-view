@@ -82,8 +82,8 @@ class DocereTextView extends React.PureComponent {
         return React.createElement(componentClass, this.getAttributes(root, rootIndex), Array.from(root.childNodes).map((child, index) => this.domToComponent(child, `${rootIndex}-${index}`)));
     }
     highlight(_prevProps) {
-        if (this.props.highlight != null &&
-            this.node != null &&
+        if (this.node != null &&
+            Array.isArray(this.props.highlight) &&
             this.props.highlight.length > 0 &&
             this.props.highlight !== this.currentHighlight) {
             const treeWalker = document.createTreeWalker(this.node, NodeFilter.SHOW_TEXT);
