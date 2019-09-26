@@ -44,9 +44,10 @@ class DocereTextView extends React.PureComponent {
             if (node instanceof XMLDocument || node instanceof HTMLDocument)
                 node = node.documentElement;
             this.node = (this.props.rootSelector == null) ? node : node.querySelector(this.props.rootSelector);
-            if (this.props.onRootElementChange != null)
-                this.props.onRootElementChange(this.node);
-            this.forceUpdate();
+            this.forceUpdate(() => {
+                if (this.props.onRootElementChange != null)
+                    this.props.onRootElementChange(this.node);
+            });
         });
     }
     getComponentClass(el) {
