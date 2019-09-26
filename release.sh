@@ -1,7 +1,5 @@
-rm -rf node_modules
+rm -rf node_modules build
 npm i
-
-npm run build
 
 echo -e "\n\n"
 read -p "Did you bump the version? (do it now, if you didn't! :))"
