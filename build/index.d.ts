@@ -1,21 +1,5 @@
+/// <reference path="../src/types.d.ts" />
 import * as React from 'react';
-declare type ReactComponent = React.FunctionComponent<any> | React.ComponentClass<any>;
-export interface DocereTextViewProps {
-    components?: {
-        [selector: string]: ReactComponent;
-    };
-    customProps?: {
-        [key: string]: any;
-    };
-    highlight?: string[];
-    html?: string;
-    ignore?: string[];
-    node?: Node;
-    onRootElementChange?: (newRoot: Element) => void;
-    url?: string;
-    xml?: string;
-    rootSelector?: string;
-}
 export default class DocereTextView extends React.PureComponent<DocereTextViewProps> {
     private currentHighlight;
     private node;
@@ -29,4 +13,3 @@ export default class DocereTextView extends React.PureComponent<DocereTextViewPr
     private domToComponent;
     private highlight;
 }
-export {};
