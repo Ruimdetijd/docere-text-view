@@ -67,6 +67,7 @@ export default class DocereTextView extends React.PureComponent<DocereTextViewPr
 		})
 	}
 
+	// TODO generete ID with rootIndex. Use ID the get component from cache
 	private getComponentClass(el: Element): ReactComponent {
 		const foundIgnore = this.props.ignore.some(selector => el.matches(selector))
 		if (foundIgnore) return null
@@ -77,24 +78,24 @@ export default class DocereTextView extends React.PureComponent<DocereTextViewPr
 		return this.props.components[selector]
 	}
 
-	private getAttributes(node: Element, index: string) {
-		// Prepare attributes. React does not accept all attribute names (ref, class, style, key)
-		const unacceptedAttributes = ['ref', 'class', 'style', 'key']
-		unacceptedAttributes.forEach(attr => {
-			if (node.hasAttribute(attr)) {
-				node.setAttribute(`_${attr}`, node.getAttribute(attr))
-				node.removeAttribute(attr)
-			}
-		})
+	// private getAttributes(node: Element, index: string) {
+	// 	// Prepare attributes. React does not accept all attribute names (ref, class, style, key)
+	// 	const unacceptedAttributes = ['ref', 'class', 'style', 'key']
+	// 	unacceptedAttributes.forEach(attr => {
+	// 		if (node.hasAttribute(attr)) {
+	// 			node.setAttribute(`_${attr}`, node.getAttribute(attr))
+	// 			node.removeAttribute(attr)
+	// 		}
+	// 	})
 
-		const nodeAttributes = {
-			...attrsToObject(node.attributes),
-			...this.props.customProps,
-			key: index,
-		}
+	// 	const nodeAttributes = {
+	// 		...attrsToObject(node.attributes),
+	// 		...this.props.customProps,
+	// 		key: index,
+	// 	}
 
-		return nodeAttributes
-	}
+	// 	return nodeAttributes
+	// }
 
 	private domToComponent(root: Node, rootIndex?: string): any {
 		// If root is null or undefined, return null, which is a valid output for a React.Component
@@ -105,15 +106,24 @@ export default class DocereTextView extends React.PureComponent<DocereTextViewPr
 
 		// Only process Elements after this
 		if (root.nodeType !== 1) return null
+		const element = root as Element
 
-		const componentClass = this.getComponentClass(root as Element)
+		// Get the attributes before the component class, because getting
+		// the attributes changes `root`
+		// const attrs = this.getAttributes(root as Element, rootIndex)
+
+		const componentClass = this.getComponentClass(element)
 		if (componentClass == null) return null
 
 		// Create the React.Component
 		return React.createElement(
 			componentClass,
-			this.getAttributes(root as Element, rootIndex),
-			Array.from(root.childNodes).map((child, index) => this.domToComponent(child, `${rootIndex}-${index}`))
+			{
+				...this.props.customProps,
+				attributes: attrsToObject(element.attributes),
+				key: rootIndex,
+			},
+			Array.from(element.childNodes).map((child, index) => this.domToComponent(child, `${rootIndex}-${index}`))
 		)
 	}
 

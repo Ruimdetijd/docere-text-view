@@ -9,7 +9,6 @@ export default class DocereTextView extends React.PureComponent<DocereTextViewPr
     render(): any;
     private setRootNode;
     private getComponentClass;
-    private getAttributes;
     private domToComponent;
     private highlight;
 }

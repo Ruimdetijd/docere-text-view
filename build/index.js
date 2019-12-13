@@ -59,17 +59,6 @@ class DocereTextView extends React.PureComponent {
             return NoopComp;
         return this.props.components[selector];
     }
-    getAttributes(node, index) {
-        const unacceptedAttributes = ['ref', 'class', 'style', 'key'];
-        unacceptedAttributes.forEach(attr => {
-            if (node.hasAttribute(attr)) {
-                node.setAttribute(`_${attr}`, node.getAttribute(attr));
-                node.removeAttribute(attr);
-            }
-        });
-        const nodeAttributes = Object.assign({}, utils_1.attrsToObject(node.attributes), this.props.customProps, { key: index });
-        return nodeAttributes;
-    }
     domToComponent(root, rootIndex) {
         if (root == null)
             return null;
@@ -77,10 +66,11 @@ class DocereTextView extends React.PureComponent {
             return root.textContent;
         if (root.nodeType !== 1)
             return null;
-        const componentClass = this.getComponentClass(root);
+        const element = root;
+        const componentClass = this.getComponentClass(element);
         if (componentClass == null)
             return null;
-        return React.createElement(componentClass, this.getAttributes(root, rootIndex), Array.from(root.childNodes).map((child, index) => this.domToComponent(child, `${rootIndex}-${index}`)));
+        return React.createElement(componentClass, Object.assign(Object.assign({}, this.props.customProps), { attributes: utils_1.attrsToObject(element.attributes), key: rootIndex }), Array.from(element.childNodes).map((child, index) => this.domToComponent(child, `${rootIndex}-${index}`)));
     }
     highlight(_prevProps) {
         if (this.node != null &&
@@ -114,9 +104,9 @@ class DocereTextView extends React.PureComponent {
         }
     }
 }
+exports.default = DocereTextView;
 DocereTextView.defaultProps = {
     customProps: {},
     components: {},
     ignore: [],
 };
-exports.default = DocereTextView;
