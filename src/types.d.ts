@@ -1,5 +1,8 @@
 type ReactComponent = React.FunctionComponent<any> | React.ComponentClass<any>
 
+type ComponentLeaf = ComponentTree | string
+interface ComponentTree { componentClass: ReactComponent, props: any, children: ComponentLeaf[] }
+
 interface DocereTextViewProps {
 	components?: { [ selector: string ]: ReactComponent }
 	customProps?: { [ key: string ]: any }
