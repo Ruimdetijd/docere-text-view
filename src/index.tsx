@@ -8,7 +8,7 @@ function renderComponentTree(tree: ComponentLeaf, props: DocereTextViewProps): a
 
 	return React.createElement(
 		tree.componentClass,
-		{ ...tree.props, ...props.customProps },
+		{ ...props.customProps, ...tree.props },
 		tree.children.map(child => renderComponentTree(child, props))
 	)
 }
