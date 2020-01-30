@@ -5,6 +5,7 @@ interface ComponentTree { componentClass: ReactComponent, props: any, children: 
 
 interface DocereTextViewProps {
 	components?: { [ selector: string ]: ReactComponent }
+	// TODO rename to componentProps
 	customProps?: { [ key: string ]: any }
 	highlight?: string[]
 	html?: string

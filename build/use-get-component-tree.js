@@ -60,7 +60,7 @@ function useGetComponentTree(props) {
             }
             setNode(prepareNode(tmpNode, props));
         }
-    }, [props.html, props.node, props.url, props.xml]);
+    }, [props.html, props.node, props.url, props.xml, props.components]);
     return node;
 }
 exports.default = useGetComponentTree;
