@@ -12,7 +12,8 @@ interface DocereTextViewProps {
 	ignore?: string[]
 	node?: Node
 	onRootElementChange?: (newRoot: Element) => void
+	rootSelector?: string
+	setHighlightAreas?: (areas: number[]) => void
 	url?: string
 	xml?: string
-	rootSelector?: string
 }

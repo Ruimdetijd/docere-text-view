@@ -19,14 +19,6 @@ function fetchXml(url) {
     });
 }
 exports.fetchXml = fetchXml;
-function wrap(node, index, found) {
-    const textRange = document.createRange();
-    textRange.setStart(node, index);
-    textRange.setEnd(node, index + found.length);
-    const el = document.createElement('mark');
-    textRange.surroundContents(el);
-}
-exports.wrap = wrap;
 function attrsToObject(attrs) {
     const tmpAttrs = {};
     for (const attr of attrs) {

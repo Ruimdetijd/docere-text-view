@@ -19,14 +19,6 @@ function fetchXml(url: string): Promise<any> {
 	})
 }
 
-function wrap(node: Text, index: number, found: string) {
-	const textRange = document.createRange()
-	textRange.setStart(node, index)
-	textRange.setEnd(node, index + found.length)
-	const el = document.createElement('mark')
-	textRange.surroundContents(el)
-}
-
 function attrsToObject(attrs: any) {
 	const tmpAttrs = {} as any
 	for (const attr of attrs) {
@@ -38,5 +30,4 @@ function attrsToObject(attrs: any) {
 export {
 	attrsToObject,
 	fetchXml,
-	wrap,
 }

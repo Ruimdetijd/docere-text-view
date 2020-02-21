@@ -38,14 +38,14 @@ function nodeToComponentTree(root: Node, props: DocereTextViewProps, rootIndex?:
 	}
 }
 
-function prepareNode(node: Node, props: DocereTextViewProps) {
+function prepareNode(node: Node, props: DocereTextViewProps): ComponentTree {
 	if (node instanceof XMLDocument || node instanceof HTMLDocument) node = node.documentElement
 	if (props.rootSelector != null) node = (node as Element).querySelector(props.rootSelector)
-	return nodeToComponentTree(node, props)
+	return nodeToComponentTree(node, props) as ComponentTree
 }
 
 export default function useGetComponentTree(props: DocereTextViewProps) {
-	const [node, setNode] = React.useState(null)
+	const [node, setNode] = React.useState<ComponentTree>(null)
 
 	/**
 	 * Set the document. There are three props options.

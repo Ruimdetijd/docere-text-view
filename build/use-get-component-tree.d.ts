@@ -1,1 +1,1 @@
-export default function useGetComponentTree(props: DocereTextViewProps): any;
+export default function useGetComponentTree(props: DocereTextViewProps): ComponentTree;
