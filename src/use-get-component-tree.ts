@@ -54,6 +54,8 @@ export default function useGetComponentTree(props: DocereTextViewProps) {
 	 * 3 `url`: an XMLDocument is fetched by XMLHttpRequest.
 	 */
 	React.useEffect(() => {
+		if (props.components == null) return
+
 		if (props.url != null) {
 			fetchXml(props.url).then(node => setNode(prepareNode(node, props)))
 		} else {

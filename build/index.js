@@ -20,4 +20,14 @@ DocereTextView.defaultProps = {
     ignore: [],
     highlight: [],
 };
-exports.default = React.memo(DocereTextView);
+exports.default = React.memo(DocereTextView, function areEqual(prevProps, nextProps) {
+    const equalProps = Object.keys(prevProps).every(k => {
+        if (k === 'customProps')
+            return true;
+        return prevProps[k] === nextProps[k];
+    });
+    const equalCustomProps = Object.keys(prevProps.customProps).every(k => {
+        return prevProps.customProps[k] === nextProps.customProps[k];
+    });
+    return equalProps && equalCustomProps;
+});

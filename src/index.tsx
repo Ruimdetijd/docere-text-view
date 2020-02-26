@@ -32,4 +32,23 @@ DocereTextView.defaultProps = {
 	highlight: [],
 }
 
-export default React.memo(DocereTextView)
+/*
+ * Use a custom areEqual function because customProps does not pass the shallow comparison
+ */
+export default React.memo(
+	DocereTextView,
+	function areEqual(prevProps: any, nextProps: any) {
+		const equalProps = Object.keys(prevProps).every(k => {
+			// if (prevProps.customProps[k] !== prevProps.customProps[k]) console.log(k, prevProps.customProps[k])
+			if (k === 'customProps') return true
+			return prevProps[k] === nextProps[k]
+		})
+
+		const equalCustomProps = Object.keys(prevProps.customProps).every(k => {
+			// if (prevProps.customProps[k] !== nextProps.customProps[k]) console.log(k, nextProps.customProps[k])
+			return prevProps.customProps[k] === nextProps.customProps[k]
+		})
+
+		return equalProps && equalCustomProps
+	}
+)

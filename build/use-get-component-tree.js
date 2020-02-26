@@ -42,6 +42,8 @@ function prepareNode(node, props) {
 function useGetComponentTree(props) {
     const [node, setNode] = React.useState(null);
     React.useEffect(() => {
+        if (props.components == null)
+            return;
         if (props.url != null) {
             utils_1.fetchXml(props.url).then(node => setNode(prepareNode(node, props)));
         }
